@@ -12,7 +12,7 @@ steps:
     name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
-      - '--tag=asia.gcr.io/it-ococ-as-ne3-dev-266806/$_PROJECT_NAME:$COMMIT_SHA'
+      - '--tag=asia.gcr.io/qwiklabs-gcp-00-ba89c17fe33f/$_PROJECT_NAME:$COMMIT_SHA'
       - '.'
   ### docker Publish
   - id: 'publish'
@@ -21,7 +21,7 @@ steps:
     args:
       - '-c'
       - |
-        docker push asia.gcr.io/it-ococ-as-ne3-dev-266806/$_PROJECT_NAME:$COMMIT_SHA
+        docker push asia.gcr.io/qwiklabs-gcp-00-ba89c17fe33f/$_PROJECT_NAME:$COMMIT_SHA
   ### deploy to dev
   - id: 'deploy dev'
     name: 'gcr.io/cloud-builders/gcloud'
@@ -66,12 +66,12 @@ steps:
             spec:
               containers:
                 - name: $_PROJECT_NAME
-                  image: asia.gcr.io/it-ococ-as-ne3-dev-266806/$_PROJECT_NAME:$COMMIT_SHA
+                  image: asia.gcr.io/qwiklabs-gcp-00-ba89c17fe33f/$_PROJECT_NAME:$COMMIT_SHA
                   ports:
                     - containerPort: 8080
         EOF
 options:
   env:
     #    # location/name of GKE cluster (used by all kubectl commands)
-    - CLOUDSDK_COMPUTE_ZONE=asia-northeast3-c
-    - CLOUDSDK_CONTAINER_CLUSTER=it-ococ-dev-gke-1
+    - CLOUDSDK_COMPUTE_ZONE=us-central1-b
+    - CLOUDSDK_CONTAINER_CLUSTER=hello-cloudbuild
