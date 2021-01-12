@@ -21,7 +21,7 @@ steps:
     args:
       - '-c'
       - |
-        docker push asia.gcr.io/hidoldori-lab-project/hidoldori-web:$COMMIT_SHA
+        docker push gcr.io/hidoldori-lab-project/hidoldori-web:$COMMIT_SHA
   ### deploy to dev
   - id: 'deploy dev'
     name: 'gcr.io/cloud-builders/gcloud'
@@ -67,7 +67,7 @@ steps:
             spec:
               containers:
                 - name: hidoldori-web
-                  image: asia.gcr.io/hidoldori-lab-project/hidoldori-web:$COMMIT_SHA
+                  image: gcr.io/hidoldori-lab-project/hidoldori-web:$COMMIT_SHA
                   ports:
                     - containerPort: 8080
         EOF
@@ -75,4 +75,4 @@ options:
   env:
     #    # location/name of GKE cluster (used by all kubectl commands)
     - CLOUDSDK_COMPUTE_ZONE=us-central1-b
-    - CLOUDSDK_CONTAINER_CLUSTER=hello-lab-cluster
+    - CLOUDSDK_CONTAINER_CLUSTER=hidoldori-lab-cluster
