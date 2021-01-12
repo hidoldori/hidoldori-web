@@ -18,7 +18,6 @@ steps:
   ### docker push
   - id: 'push'
     name: 'gcr.io/cloud-builders/docker'
-    entrypoint: 'bash'
     args:
       - 'push'
       - 'gcr.io/hidoldori-lab-project/hidoldori-web:$COMMIT_SHA'
