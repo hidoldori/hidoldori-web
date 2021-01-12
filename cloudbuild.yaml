@@ -12,7 +12,7 @@ steps:
     name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
-      - '--tag=asia.gcr.io/qwiklabs-gcp-00-ba89c17fe33f/$_PROJECT_NAME:$COMMIT_SHA'
+      - '--tag=gcr.io/hidoldori-lab-project/hidoldori-web:$COMMIT_SHA'
       - '.'
   ### docker Publish
   - id: 'publish'
@@ -21,7 +21,7 @@ steps:
     args:
       - '-c'
       - |
-        docker push asia.gcr.io/qwiklabs-gcp-00-ba89c17fe33f/$_PROJECT_NAME:$COMMIT_SHA
+        docker push asia.gcr.io/hidoldori-lab-project/hidoldori-web:$COMMIT_SHA
   ### deploy to dev
   - id: 'deploy dev'
     name: 'gcr.io/cloud-builders/gcloud'
@@ -37,36 +37,37 @@ steps:
         apiVersion: v1
         kind: Service
         metadata:
-          name: $_PROJECT_NAME
+          name: hidoldori-web
           labels:
-            app: $_PROJECT_NAME
+            app: hidoldori-web
         spec:
           ports:
             - port: 8080
               targetPort: 8080
           selector:
-            app: $_PROJECT_NAME
+            app: hidoldori-web
+          type: LoadBalancer
         EOF
         cat <<EOF | kubectl apply -f -
         apiVersion: apps/v1
         kind: Deployment
         metadata:
-          name: $_PROJECT_NAME
+          name: hidoldori-web
           labels:
-            app: $_PROJECT_NAME
+            app: hidoldori-web
         spec:
           replicas: 1
           selector:
             matchLabels:
-              app: $_PROJECT_NAME
+              app: hidoldori-web
           template:
             metadata:
               labels:
-                app: $_PROJECT_NAME
+                app: hidoldori-web
             spec:
               containers:
-                - name: $_PROJECT_NAME
-                  image: asia.gcr.io/qwiklabs-gcp-00-ba89c17fe33f/$_PROJECT_NAME:$COMMIT_SHA
+                - name: hidoldori-web
+                  image: asia.gcr.io/hidoldori-lab-project/hidoldori-web:$COMMIT_SHA
                   ports:
                     - containerPort: 8080
         EOF
@@ -74,4 +75,4 @@ options:
   env:
     #    # location/name of GKE cluster (used by all kubectl commands)
     - CLOUDSDK_COMPUTE_ZONE=us-central1-b
-    - CLOUDSDK_CONTAINER_CLUSTER=hello-cloudbuild
+    - CLOUDSDK_CONTAINER_CLUSTER=hello-lab-cluster
