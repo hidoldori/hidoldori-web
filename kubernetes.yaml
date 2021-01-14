@@ -30,6 +30,6 @@ spec:
     spec:
       containers:
         - name: hidoldori-web
-          image: gcr.io/hidoldori-lab-project/hidoldori-web:$COMMIT_SHA
+          image: gcr.io/hidoldori-lab-web-01/hidoldori-web:$COMMIT_SHA
           ports:
             - containerPort: 8080
