@@ -21,11 +21,9 @@ steps:
     args:
       - 'push'
       - 'gcr.io/hidoldori-lab-web-01/hidoldori-web:$SHORT_SHA'
-  # [START cloudbuild-trigger-cd]
-  -
   # This step clones the hello-cloudbuild-env repository
-  - name: 'gcr.io/cloud-builders/gcloud'
-    id: Clone env repository
+  - id: 'Clone env repository'
+    name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: /bin/sh
     args:
       - '-c'
@@ -33,18 +31,17 @@ steps:
         gcloud source repos clone hidoldori-env && \
         cd hidoldori-env && \
         git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
-
   # This step generates the new manifest
-  - name: 'gcr.io/cloud-builders/gcloud'
-    id: Generate manifest
+  - id: 'Generate manifest'
+    name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: /bin/sh
     args:
       - '-c'
       - |
         sed "s/SHORT_SHA/${SHORT_SHA}/g" > hidoldori-env/kubernetes.yaml
   # This step pushes the manifest back to hello-cloudbuild-env
-  - name: 'gcr.io/cloud-builders/gcloud'
-    id: Push manifest
+  - id: 'Push manifest'
+    name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: /bin/sh
     args:
       - '-c'
