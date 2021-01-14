@@ -21,13 +21,38 @@ steps:
     args:
       - 'push'
       - 'gcr.io/hidoldori-lab-web-01/hidoldori-web:$SHORT_SHA'
-  ### deploy gke
-  - id: 'deploy'
-    name: 'gcr.io/cloud-builders/kubectl'
+  # [START cloudbuild-trigger-cd]
+  -
+  # This step clones the hello-cloudbuild-env repository
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: Clone env repository
+    entrypoint: /bin/sh
     args:
-      - 'apply'
-      - '-f'
-      - 'kubernetes.yaml'
-    env:
-      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-b'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=hidoldori-lab-cluster'
+      - '-c'
+      - |
+        gcloud source repos clone hidoldori-env && \
+        cd hidoldori-env && \
+        git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
+
+  # This step generates the new manifest
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: Generate manifest
+    entrypoint: /bin/sh
+    args:
+      - '-c'
+      - |
+        sed "s/SHORT_SHA/${SHORT_SHA}/g" > hidoldori-env/kubernetes.yaml
+  # This step pushes the manifest back to hello-cloudbuild-env
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: Push manifest
+    entrypoint: /bin/sh
+    args:
+      - '-c'
+      - |
+        set -x && \
+        cd hidoldori-env && \
+        git add kubernetes.yaml && \
+        git commit -m "Deploying image gcr.io/${PROJECT_ID}/hello-cloudbuild:${SHORT_SHA}
+        Built from commit ${COMMIT_SHA} of repository hello-cloudbuild-app
+        Author: $(git log --format='%an <%ae>' -n 1 HEAD)" && \
+        git push origin master

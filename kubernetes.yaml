@@ -30,6 +30,6 @@ spec:
     spec:
       containers:
         - name: hidoldori-web
-          image: gcr.io/hidoldori-lab-web-01/hidoldori-web:$SHORT_SHA
+          image: gcr.io/hidoldori-lab-web-01/hidoldori-web:SHORT_SHA
           ports:
             - containerPort: 8080
