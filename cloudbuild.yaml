@@ -21,7 +21,7 @@ steps:
     args:
       - 'push'
       - 'gcr.io/hidoldori-lab-cicd-project/hidoldori-web:$SHORT_SHA'
-  # This step clones the hello-cloudbuild-env repository
+  # This step clones the hidoldori-env repository
   - id: 'Clone env repository'
     name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: /bin/sh
@@ -38,6 +38,7 @@ steps:
     args:
       - '-c'
       - |
+        sed "s/12345/6789/g" kubernetes.yaml.tpl | \
         sed "s/SHORT_SHA/${SHORT_SHA}/g" > hidoldori-env/kubernetes.yaml
   # This step pushes the manifest back to hidoldori-env
   - id: 'Push manifest'
