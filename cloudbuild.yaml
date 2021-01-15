@@ -13,14 +13,14 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'gcr.io/hidoldori-lab-web-01/hidoldori-web:$SHORT_SHA'
+      - 'gcr.io/hidoldori-lab-cicd-project/hidoldori-web:$SHORT_SHA'
       - '.'
   ### docker push
   - id: 'push'
     name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'gcr.io/hidoldori-lab-web-01/hidoldori-web:$SHORT_SHA'
+      - 'gcr.io/hidoldori-lab-cicd-project/hidoldori-web:$SHORT_SHA'
   # This step clones the hello-cloudbuild-env repository
   - id: 'Clone env repository'
     name: 'gcr.io/cloud-builders/gcloud'
@@ -39,7 +39,7 @@ steps:
       - '-c'
       - |
         sed "s/SHORT_SHA/${SHORT_SHA}/g" > hidoldori-env/kubernetes.yaml
-  # This step pushes the manifest back to hello-cloudbuild-env
+  # This step pushes the manifest back to hidoldori-env
   - id: 'Push manifest'
     name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: /bin/sh
@@ -49,7 +49,7 @@ steps:
         set -x && \
         cd hidoldori-env && \
         git add kubernetes.yaml && \
-        git commit -m "Deploying image gcr.io/${PROJECT_ID}/hello-cloudbuild:${SHORT_SHA}
-        Built from commit ${COMMIT_SHA} of repository hello-cloudbuild-app
+        git commit -m "Deploying image gcr.io/${PROJECT_ID}/hidoldori-web:${SHORT_SHA}
+        Built from commit ${COMMIT_SHA} of repository hidoldori-web
         Author: $(git log --format='%an <%ae>' -n 1 HEAD)" && \
         git push origin master
