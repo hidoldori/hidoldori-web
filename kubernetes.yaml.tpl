@@ -4,7 +4,6 @@ metadata:
   name: hidoldori-web
   labels:
     app: hidoldori-web
-  namespace: hidoldori
 spec:
   ports:
     - port: 8080
@@ -19,7 +18,6 @@ metadata:
   name: hidoldori-web
   labels:
     app: hidoldori-web
-  namespace: hidoldori
 spec:
   replicas: 2
   selector:
